@@ -6,7 +6,26 @@
     <title>Login</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#9C2C2C">
+
 </head>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js")
+        .then(reg => {
+          console.log("Service Worker registrado correctamente:", reg.scope);
+        })
+        .catch(err => {
+          console.error("Error al registrar el Service Worker:", err);
+        });
+    });
+  } else {
+    console.log("Este navegador no soporta Service Workers");
+  }
+</script>
+
 <body>
 <div class="wrapper">
   <div class="title-text">
