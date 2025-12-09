@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="7" failures="0" errors="0" time="5.435">
+  <testsuite name="Pruebas del Carrito" errors="0" failures="0" skipped="0" timestamp="2025-10-03T14:41:30" time="3.486" tests="3">
+    <testcase classname="Pruebas del Carrito Agregar producto al carrito" name="Pruebas del Carrito Agregar producto al carrito" time="0.037">
+    </testcase>
+    <testcase classname="Pruebas del Carrito Actualizar cantidad de producto" name="Pruebas del Carrito Actualizar cantidad de producto" time="0.037">
+    </testcase>
+    <testcase classname="Pruebas del Carrito Vaciar carrito" name="Pruebas del Carrito Vaciar carrito" time="0.053">
+    </testcase>
+  </testsuite>
+  <testsuite name="Pruebas de Productos" errors="0" failures="0" skipped="0" timestamp="2025-10-03T14:41:34" time="0.702" tests="2">
+    <testcase classname="Pruebas de Productos Devuelve lista de productos con token válido" name="Pruebas de Productos Devuelve lista de productos con token válido" time="0.015">
+    </testcase>
+    <testcase classname="Pruebas de Productos Rechaza acceso sin token" name="Pruebas de Productos Rechaza acceso sin token" time="0.012">
+    </testcase>
+  </testsuite>
+  <testsuite name="Pruebas de Autenticación" errors="0" failures="0" skipped="0" timestamp="2025-10-03T14:41:35" time="0.54" tests="2">
+    <testcase classname="Pruebas de Autenticación Login correcto devuelve token" name="Pruebas de Autenticación Login correcto devuelve token" time="0.026">
+    </testcase>
+    <testcase classname="Pruebas de Autenticación Login incorrecto devuelve 401" name="Pruebas de Autenticación Login incorrecto devuelve 401" time="0.011">
+    </testcase>
+  </testsuite>
+</testsuites>
