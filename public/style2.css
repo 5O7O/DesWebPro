@@ -225,3 +225,16 @@ img.lazy {
   width: 100%;
   height: auto;
 }
+/* Estilos para lazy loading */
+
+
+img:not(.lazy) {
+    opacity: 1;
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}

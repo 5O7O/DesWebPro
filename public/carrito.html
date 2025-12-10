@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Carrito</title>
   <link rel="stylesheet" href="style2.css">
+  <!-- Agregar este script para lazy loading -->
+  <script src="/js/lazy-loading.js" defer></script>
 </head>
 <body>
   <h1 style="text-align:center;">Catálogo de Productos</h1>
@@ -28,7 +30,11 @@
     alert("Debes iniciar sesión");
     window.location.href = "/index.html";
   }
-   // Función para convertir la clave pública VAPID de base64 a uint8Array
+
+  // Data URI para placeholder (imagen gris de 150x150)
+  const PLACEHOLDER_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23f5f5f5'/%3E%3Cpath d='M75 50 L100 100 L50 100 Z' fill='%23e0e0e0'/%3E%3Ctext x='75' y='130' text-anchor='middle' font-family='Arial' font-size='12' fill='%23999'%3ECargando...%3C/text%3E%3C/svg%3E";
+
+  // Función para convertir la clave pública VAPID de base64 a uint8Array
   function urlB64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
     const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
@@ -45,10 +51,9 @@
     navigator.serviceWorker.ready.then(function(registration) {
       registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlB64ToUint8Array('TU_CLAVE_PUBLICA_VAPID_AQUI') // Reemplaza con tu clave pública VAPID
+        applicationServerKey: urlB64ToUint8Array('TU_CLAVE_PUBLICA_VAPID_AQUI')
       })
       .then(function(subscription) {
-        // Enviar la suscripción al backend
         fetch("/send-push", {
           method: "POST",
           headers: {
@@ -56,7 +61,7 @@
           },
           body: JSON.stringify({
             subscription: subscription,
-            message: "¡Nuevo producto en oferta!" // Mensaje a mostrar en la notificación
+            message: "¡Nuevo producto en oferta!"
           })
         })
         .then(response => {
@@ -75,17 +80,19 @@
   } else {
     console.log("El navegador no soporta notificaciones push.");
   }
+
   // Función para mostrar una notificación
   function showNotification() {
     if (Notification.permission === "granted") {
       new Notification("¡Nuevo producto en oferta!", {
         body: "¡Aprovecha el descuento en nuestra Laptop Gamer!",
-        icon: "/images/laptop.jpg"  // Usa el icono de la app
+        icon: "/images/laptop.jpg"
       });
     } else {
       alert("El permiso para notificaciones no ha sido concedido.");
     }
   }
+
   // --- Cargar productos y carrito ---
   async function cargarProductos() {
     try {
@@ -102,8 +109,7 @@
 
       const productos = await res.json();
       mostrarProductos(productos);
-      await cargarCarrito(); // cargar el carrito del servidor
-      showNotification(); // Llamada para mostrar la notificación cuando agregan un producto
+      await cargarCarrito();
       
     } catch (err) {
       console.error(err);
@@ -119,16 +125,38 @@
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <img src="${p.image}" width="150">
+        <img class="lazy" 
+             data-src="${p.image}" 
+             src="${PLACEHOLDER_IMAGE}" 
+             width="150" 
+             height="150"
+             alt="${p.name}"
+             data-fallback="${PLACEHOLDER_IMAGE}">
         <h4>${p.name}</h4>
         <p>$${p.price}</p>
       `;
+      
       const btn = document.createElement("button");
       btn.textContent = "Agregar";
       btn.addEventListener("click", () => agregarCarrito(p.id, p.name, p.price, p.image));
       card.appendChild(btn);
       cont.appendChild(card);
     });
+
+    // Observar nuevas imágenes después de agregarlas al DOM
+    setTimeout(() => {
+      if (window.lazyLoadModule && window.lazyLoadModule.observeNewImages) {
+        window.lazyLoadModule.observeNewImages(cont);
+      } else {
+        // Fallback si el módulo no está cargado
+        document.querySelectorAll('#productos img.lazy').forEach(img => {
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+          }
+        });
+      }
+    }, 100);
   }
 
   // --- Cargar carrito desde backend ---
@@ -205,7 +233,7 @@
         const data = await res.json();
         carrito = data.carrito;
         actualizarCarrito();
-        showNotification
+        showNotification();
       }
     } catch (err) {
       console.error(err);
@@ -240,7 +268,7 @@
       const li = document.createElement("li");
       li.className = "carrito-item";
       li.innerHTML = `
-        <img src="${item.image}" class="carrito-img">
+        <img src="${item.image}" class="carrito-img" alt="${item.name}">
         <div class="carrito-info">
           <div class="carrito-header">
             <strong>${item.name}</strong>
@@ -258,7 +286,6 @@
         </div>
       `;
 
-      // Eventos para eliminar y cambiar cantidad
       li.querySelector(".btn-eliminar").addEventListener("click", () => eliminarDelCarrito(item.id));
       li.querySelector(".btn-menos").addEventListener("click", () => cambiarCantidad(item.id, item.cantidad - 1));
       li.querySelector(".btn-mas").addEventListener("click", () => cambiarCantidad(item.id, item.cantidad + 1));
@@ -289,31 +316,8 @@
   });
 
   // --- Cargar productos al iniciar ---
-  cargarProductos();
-    // Función para realizar el lazy loading de las imágenes
-  function lazyLoadImages() {
-  const images = document.querySelectorAll('img.lazy');
-
-  const observer = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        console.log(`Imagen visible, cargando: ${img.dataset.src}`); // Imprime en la consola cuando la imagen se carga
-        img.src = img.dataset.src; // Cargar la imagen
-        img.classList.remove('lazy'); // Eliminar la clase lazy
-        observer.unobserve(img); // Dejar de observar la imagen
-      }
-    });
-  });
-
-  images.forEach(image => {
-    observer.observe(image);
-  });
-}
-
-  // Llamar la función de lazy loading después de que el contenido se haya cargado
-  window.addEventListener('load', lazyLoadImages);
-
+  document.addEventListener('DOMContentLoaded', cargarProductos);
+  
   </script>
 </body>
 </html>
