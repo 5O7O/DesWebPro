@@ -49,4 +49,31 @@ loginForm.addEventListener("submit", async (e) => {
         console.error(err);
         alert("Error al iniciar sesión");
     }
+    
 });
+// Solicitar permiso para mostrar notificaciones
+function requestNotificationPermission() {
+  if ("Notification" in window) {
+    // Verificar si el navegador soporta notificaciones
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") {
+        console.log("¡Permiso para notificaciones concedido!");
+      } else {
+        console.log("Permiso para notificaciones denegado");
+      }
+    });
+  } else {
+    alert("Este navegador no soporta notificaciones");
+  }
+}
+function showNotification() {
+  if (Notification.permission === "granted") {
+    new Notification("¡Nuevo producto en oferta!", {
+      body: "¡Aprovecha el descuento en nuestra Laptop Gamer!",
+      icon: "/images/laptop.jpg"  // Puedes usar un icono específico
+    });
+  } else {
+    alert("El permiso para notificaciones no ha sido concedido.");
+  }
+}
+

@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const webPush = require('web-push');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public"))); 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
+// VAPID Keys (debes generar estas claves)
+const vapidKeys = webPush.generateVAPIDKeys();
+console.log(vapidKeys); // Imprime las claves
+
+// Configurar las claves VAPID para enviar notificaciones
+webPush.setVapidDetails(
+  'mailto:junst350@gmail.com',
+  vapidKeys.publicKey,
+  vapidKeys.privateKey
+);
 // --- "Base de datos" en memoria ---
 const users = [
   { email: "juan@test.com", password: "1234", username: "Juan" },
@@ -77,6 +88,21 @@ async function autenticarToken(req, res, next) {
     return res.status(500).json({ message: "Error al validar token" });
   }
 }
+
+// --- Enviar notificación push (ruta nueva) ---
+app.post("/send-push", (req, res) => {
+  const { subscription, message } = req.body;
+
+  // Enviar la notificación push a la suscripción del cliente
+  webPush.sendNotification(subscription, message)
+    .then(response => {
+      res.status(200).json({ message: "Notificación enviada correctamente" });
+    })
+    .catch(err => {
+      console.error("Error al enviar la notificación:", err);
+      res.status(500).json({ message: "Error al enviar la notificación" });
+    });
+});
 
 // --- Rutas de autenticación local ---
 app.post("/login", (req, res) => {

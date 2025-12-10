@@ -28,7 +28,17 @@
     alert("Debes iniciar sesión");
     window.location.href = "/index.html";
   }
-
+  // Función para mostrar una notificación
+  function showNotification() {
+    if (Notification.permission === "granted") {
+      new Notification("¡Nuevo producto en oferta!", {
+        body: "¡Aprovecha el descuento en nuestra Laptop Gamer!",
+        icon: "/images/laptop.jpg"  // Usa el icono de la app
+      });
+    } else {
+      alert("El permiso para notificaciones no ha sido concedido.");
+    }
+  }
   // --- Cargar productos y carrito ---
   async function cargarProductos() {
     try {
@@ -46,6 +56,8 @@
       const productos = await res.json();
       mostrarProductos(productos);
       await cargarCarrito(); // cargar el carrito del servidor
+      showNotification(); // Llamada para mostrar la notificación cuando agregan un producto
+      
     } catch (err) {
       console.error(err);
       alert("Error al cargar productos");
@@ -81,6 +93,7 @@
       if (res.ok) {
         carrito = await res.json();
         actualizarCarrito();
+        showNotification();
       }
     } catch (err) {
       console.error(err);
@@ -102,6 +115,7 @@
         const data = await res.json();
         carrito = data.carrito;
         actualizarCarrito();
+        showNotification();
       } else {
         const error = await res.json();
         alert("Error: " + (error.message || "No se pudo agregar"));
@@ -144,6 +158,7 @@
         const data = await res.json();
         carrito = data.carrito;
         actualizarCarrito();
+        showNotification
       }
     } catch (err) {
       console.error(err);

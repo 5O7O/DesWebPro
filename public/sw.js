@@ -1,19 +1,13 @@
 
 const CACHE_NAME = "deswebpro-v1";
-
 const FILES_TO_CACHE = [
-  "/",                // la ruta raíz
-  "/index.html",
-  "/carrito.html",
-  "/style.css",
-  "/style2.css",
-  "/script.js",
-  "/manifest.json",
-  // Si tienes imágenes, agrégalas también, por ejemplo:
-  // "/img/logo.png",
-  // "/img/producto1.jpg",
+  "./",
+  "./index.html",
+  "./styles.css",     // cambia por tu archivo real de estilos
+  "",         // cambia por tu JS principal
+  // agrega aquí imágenes o páginas importantes:
+  // "./img/logo.png",
 ];
-
 // sw.js
 console.log("¡Service Worker registrado!");
 
@@ -72,5 +66,16 @@ self.addEventListener("fetch", (event) => {
           // return caches.match("./offline.html");
         });
     })
+  );
+});
+self.addEventListener('push', function(event) {
+  let options = {
+    body: event.data.text(),
+    icon: '/images/laptop.jpg',
+    badge: '/images/badge.jpg'
+  };
+
+  event.waitUntil(
+    self.registration.showNotification('Nueva notificación', options)
   );
 });
