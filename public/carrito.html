@@ -290,6 +290,30 @@
 
   // --- Cargar productos al iniciar ---
   cargarProductos();
+    // Función para realizar el lazy loading de las imágenes
+  function lazyLoadImages() {
+  const images = document.querySelectorAll('img.lazy');
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        console.log(`Imagen visible, cargando: ${img.dataset.src}`); // Imprime en la consola cuando la imagen se carga
+        img.src = img.dataset.src; // Cargar la imagen
+        img.classList.remove('lazy'); // Eliminar la clase lazy
+        observer.unobserve(img); // Dejar de observar la imagen
+      }
+    });
+  });
+
+  images.forEach(image => {
+    observer.observe(image);
+  });
+}
+
+  // Llamar la función de lazy loading después de que el contenido se haya cargado
+  window.addEventListener('load', lazyLoadImages);
+
   </script>
 </body>
 </html>

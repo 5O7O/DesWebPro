@@ -219,3 +219,9 @@ h1 {
   font-weight: bold;
   font-size: 14px;
 }
+img.lazy {
+  background-color: #310162; /* Fondo gris mientras la imagen no se carga */
+  display: block;
+  width: 100%;
+  height: auto;
+}

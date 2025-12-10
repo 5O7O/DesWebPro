@@ -4,7 +4,7 @@ const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./styles.css",     // cambia por tu archivo real de estilos
-  "",         // cambia por tu JS principal
+  "./server.js"         // cambia por tu JS principal
   // agrega aquí imágenes o páginas importantes:
   // "./img/logo.png",
 ];
