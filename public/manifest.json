@@ -4,9 +4,9 @@
   "description": "Aplicación web para comprar productos tecnológicos con autenticación local y Google.",
   "start_url": "/index.html",
   "scope": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0078d7",
+  "display": "standalone", 
+  "background_color": "#ffffff",  
+  "theme_color": "#0078d7",       
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -26,5 +26,13 @@
   ],
   "categories": ["shopping", "technology", "ecommerce"],
   "lang": "es-MX",
-  "dir": "ltr"
+  "dir": "ltr",
+  "splash_pages": [
+    {
+      "src": "/images/badge.jpg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "background_color": "#ffffff"  
+    }
+  ]
 }
