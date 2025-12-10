@@ -88,6 +88,19 @@ async function autenticarToken(req, res, next) {
     return res.status(500).json({ message: "Error al validar token" });
   }
 }
+// Enviar notificación push
+app.post("/send-push", (req, res) => {
+  const { subscription, message } = req.body;
+
+  webPush.sendNotification(subscription, message)
+    .then(response => {
+      res.status(200).json({ message: "Notificación enviada", response });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Error al enviar notificación", err });
+    });
+});
+
 
 // --- Enviar notificación push (ruta nueva) ---
 app.post("/send-push", (req, res) => {

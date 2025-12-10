@@ -79,3 +79,14 @@ self.addEventListener('push', function(event) {
     self.registration.showNotification('Nueva notificación', options)
   );
 });
+self.addEventListener('push', function(event) {
+  let options = {
+    body: event.data.text(),
+    icon: '/images/laptop.jpg', // Ajusta el icono
+    badge: '/images/badge.jpg'  // Ajusta el badge
+  };
+
+  event.waitUntil(
+    self.registration.showNotification('Nueva notificación', options)
+  );
+});
